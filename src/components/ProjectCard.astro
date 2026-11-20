@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { url } from '../utils/url';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, description, tags, date } = project.data;
+---
+
+<article class="card">
+	<h3><a href={url(`projects/${project.id}/`)}>{title}</a></h3>
+	<p class="description">{description}</p>
+	<div class="meta">
+		<ul class="tags">{tags.map((tag) => <li>{tag}</li>)}</ul>
+		<time datetime={date.toISOString()}>{date.getFullYear()}</time>
+	</div>
+</article>
+
+<style>
+	.card {
+		position: relative;
+		padding: 1.25rem 1.25rem 1.1rem;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		transition: border-color 0.15s ease;
+	}
+
+	.card:hover {
+		border-color: var(--accent);
+	}
+
+	h3 {
+		margin: 0 0 0.35rem;
+		font-size: 1.1rem;
+	}
+
+	h3 a {
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	/* Make the whole card clickable while keeping a single link for screen readers. */
+	h3 a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+	}
+
+	.description {
+		margin: 0 0 0.9rem;
+		color: var(--muted);
+	}
+
+	.meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	time {
+		flex-shrink: 0;
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+</style>
