@@ -1,0 +1,54 @@
+---
+import { SITE } from '../consts';
+import { url } from '../utils/url';
+
+const nav = [
+	{ label: 'About', href: url('#about') },
+	{ label: 'Projects', href: url('#projects') },
+	{ label: 'Contact', href: url('#contact') },
+];
+---
+
+<header class="container">
+	<a class="brand" href={url()}>{SITE.name}</a>
+	<nav aria-label="Main">
+		<ul>
+			{nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+		</ul>
+	</nav>
+</header>
+
+<style>
+	header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 0.75rem 1.5rem;
+		padding-block: 1.5rem;
+	}
+
+	.brand {
+		font-weight: 700;
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	ul {
+		display: flex;
+		gap: 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	nav a {
+		color: var(--muted);
+		text-decoration: none;
+		font-size: 0.95rem;
+	}
+
+	nav a:hover {
+		color: var(--text);
+	}
+</style>

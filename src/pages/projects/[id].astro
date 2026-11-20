@@ -1,0 +1,92 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { url } from '../../utils/url';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, description, date, tags, repo, demo } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={title} description={description}>
+	<article>
+		<a class="back" href={url('#projects')}>← All projects</a>
+		<h1>{title}</h1>
+		<p class="lede">{description}</p>
+		<div class="meta">
+			<time datetime={date.toISOString()}>
+				{date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+			</time>
+			<ul class="tags">{tags.map((tag) => <li>{tag}</li>)}</ul>
+		</div>
+		{
+			(repo || demo) && (
+				<p class="actions">
+					{demo && <a href={demo}>Live demo ↗</a>}
+					{repo && <a href={repo}>Source code ↗</a>}
+				</p>
+			)
+		}
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	article {
+		margin-top: 2rem;
+	}
+
+	.back {
+		color: var(--muted);
+		text-decoration: none;
+		font-size: 0.95rem;
+	}
+
+	h1 {
+		margin: 1.25rem 0 0.5rem;
+		font-size: clamp(1.8rem, 5vw, 2.4rem);
+	}
+
+	.lede {
+		margin: 0 0 1rem;
+		color: var(--muted);
+		font-size: 1.125rem;
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1rem;
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+
+	.actions {
+		display: flex;
+		gap: 1.25rem;
+		margin-top: 1.25rem;
+	}
+
+	.prose {
+		margin-top: 2.5rem;
+		padding-top: 0.5rem;
+		border-top: 1px solid var(--border);
+	}
+
+	.prose :global(h2) {
+		margin-top: 2rem;
+		font-size: 1.3rem;
+	}
+</style>
